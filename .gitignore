@@ -48,3 +48,7 @@ desktop.ini
 logs/
 downloads/
 screenshots/
+
+# Private headless companion runtime (normally outside this checkout)
+.companion/
+companion-data/

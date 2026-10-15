@@ -1,0 +1,6 @@
+# Headless service + local test transport; no Qt, audio device, or ML model dependency.
+starlette>=1.8,<2
+uvicorn>=0.54,<0.56
+httpx>=0.28.1,<0.30
+websockets>=16.1,<17
+pillow>=12.3,<13

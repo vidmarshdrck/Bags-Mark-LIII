@@ -1,17 +1,37 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Bags — Valet</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#10171b">
-<link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="stylesheet" href="app.css"></head>
-<body><header><div><div class="mark">BAGS</div><div id="agentHdr" class="muted">Bags · Personal butler</div></div><span id="conn" class="pill">mock backend</span></header>
-<nav><button data-tab="chat" class="on">Talk</button><button data-tab="org">Agents</button><button data-tab="meet">Meetings</button><button data-tab="tasks">Tasks</button></nav>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<title>Bags · Valet</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0b1114">
+<link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="stylesheet" href="app.css"></head>
+<body><div class="bg" aria-hidden="true"><i class="orb a"></i><i class="orb b"></i><i class="ring"></i></div>
+<!-- Icons: Tabler Icons (MIT), stroke 1.75 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M8 9h8M8 13h6M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-5l-5 3v-3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z"/></symbol>
+<symbol id="i-org" viewBox="0 0 24 24"><path d="M9 3h6v4H9zM3 17h6v4H3zM15 17h6v4h-6zM6 17v-3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v3M12 7v6"/></symbol>
+<symbol id="i-meet" viewBox="0 0 24 24"><path d="M5 7a2 2 0 1 0 4 0a2 2 0 1 0-4 0M15 7a2 2 0 1 0 4 0a2 2 0 1 0-4 0M3 17v-1a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v1M13 17v-1a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v1M3 21h18"/></symbol>
+<symbol id="i-task" viewBox="0 0 24 24"><path d="M3.5 5.5 5 7l2.5-2.5M3.5 11.5 5 13l2.5-2.5M3.5 17.5 5 19l2.5-2.5M11 6h9M11 12h9M11 18h9"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><path d="M9 5a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0zM5 10a7 7 0 0 0 14 0M8 21h8M12 17v4"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M10 14 21 3M21 3l-6.5 18a.55.55 0 0 1-1 0L10 14l-7-3.5a.55.55 0 0 1 0-1z"/></symbol>
+<symbol id="i-stop" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></symbol>
+<symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12h1M7 8v8M11 5v14M15 8v8M19 11v2M21 12h0"/></symbol>
+</svg>
+<header class="glass top"><div class="mark" aria-label="Bags">BAGS</div><div class="who"><span id="agentHdr">Bags · Personal butler</span><span id="conn" class="status">mock backend</span></div>
+<button id="handsfree" class="chip" aria-pressed="false" title="Hands-free conversation"><svg><use href="#i-wave"/></svg><span>Hands-free</span></button></header>
 <main>
-<section id="chat" class="tab on"><div id="log" aria-live="polite"></div><div id="partial" class="muted"></div>
-<div class="voice"><button id="handsfree" aria-pressed="false">🎙 Hands-free: off</button><button id="stop" class="danger">■ Stop</button></div>
-<form id="composer"><input id="msg" maxlength="4096" placeholder="Message Bags…" autocomplete="off"><button>Send</button></form>
-<p class="muted small" id="speechNote"></p></section>
-<section id="org" class="tab"><p class="muted small">Org chart from vidmarholdings AGENTS.md. Only Bags answers (mock). Everyone else is <b>disconnected</b> until a real agent bridge exists. Which specialist sits under which CEO is a proposed grouping.</p><div id="tree"></div></section>
-<section id="meet" class="tab"><div class="meeting"><h3>New CEO / project meeting</h3>
-<label>Project<input id="mProject" placeholder="e.g. VHPMS launch"></label><label>Agenda<textarea id="mAgenda"></textarea></label>
-<div class="participant-list" id="mParts"></div><label class="pref"><input type="checkbox" id="mOk"> I approve this shared context</label>
-<button id="mCreate">Open meeting</button></div><div id="mList"></div><div id="mView"></div></section>
-<section id="tasks" class="tab"><button id="tStatus">Run server status check (mock, confirmed)</button><label class="pref"><input type="checkbox" id="tSpeak"> Speak completions</label><div id="tList"></div></section>
-</main><script src="mock.js"></script><script src="agents.js"></script><script src="app.js"></script></body></html>
+<section id="chat" class="tab on" aria-label="Talk"><div id="log" aria-live="polite"></div><div id="partial" class="partial" aria-live="polite"></div></section>
+<section id="org" class="tab" aria-label="Agents"><h2>Agents</h2><p class="note">Only Bags answers, on the local mock. Every other agent shows as disconnected until a real agent bridge exists.</p><div id="tree"></div></section>
+<section id="meet" class="tab" aria-label="Meetings"><h2>Meetings</h2><div class="glass panel"><label>Project<input id="mProject" placeholder="VHPMS launch"></label><label>Agenda<textarea id="mAgenda" rows="2"></textarea></label>
+<div class="participant-list" id="mParts"></div><label class="pref"><input type="checkbox" id="mOk"> I approve this shared context</label><button id="mCreate" class="primary">Open meeting</button></div><div id="mList"></div><div id="mView"></div></section>
+<section id="tasks" class="tab" aria-label="Tasks"><h2>Tasks</h2><div class="glass panel"><button id="tStatus" class="primary">Run status check</button><label class="pref"><input type="checkbox" id="tSpeak"> Speak completions</label></div><div id="tList"></div></section>
+</main>
+<form id="composer" class="glass dock" autocomplete="off">
+<button type="button" id="rec" class="icon mic" aria-label="Hold to record a voice note"><svg><use href="#i-mic"/></svg></button>
+<input id="msg" maxlength="4096" placeholder="Message Bags" enterkeyhint="send" aria-label="Message">
+<button id="sendBtn" class="icon send" aria-label="Send"><svg><use href="#i-send"/></svg></button>
+<button type="button" id="stop" class="icon" aria-label="Stop speech" hidden><svg><use href="#i-stop"/></svg></button>
+<div id="recHint" class="rechint" hidden><span class="dot"></span><span id="recTime">0:00</span> Recording. Release to send, slide away to cancel.</div>
+</form>
+<nav class="glass tabbar" aria-label="Sections">
+<button data-tab="chat" class="on" aria-current="page"><svg><use href="#i-chat"/></svg><span>Talk</span></button>
+<button data-tab="org"><svg><use href="#i-org"/></svg><span>Agents</span></button>
+<button data-tab="meet"><svg><use href="#i-meet"/></svg><span>Meetings</span></button>
+<button data-tab="tasks"><svg><use href="#i-task"/></svg><span>Tasks</span></button></nav>
+<script src="mock.js"></script><script src="agents.js"></script><script src="app.js"></script></body></html>

@@ -30,7 +30,9 @@ class H(http.server.SimpleHTTPRequestHandler):
         return True
     def api(s,m,P,q):
         if P==['chat'] and m=='POST':
-            t=str(s.body().get('text',''))[:4096]; return s.j(200,{'reply':reply(t),'source':'mock-local'})
+            b=s.body(); t=str(b.get('text',''))[:4096]
+            if b.get('voice') and not b.get('transcribed'): return s.j(200,{'reply':f"Voice note received, {b.get('duration','?')} seconds. I couldn't get a transcript in this browser, so please give me the gist in text.",'source':'mock-local'})
+            return s.j(200,{'reply':('Voice note heard. ' if b.get('voice') else '')+reply(t),'source':'mock-local'})
         if P==['interrupt']: return s.j(200,{'type':'interrupted'})
         if P==['tasks']:
             if m=='GET': return s.j(200,{'tasks':list(TASKS.values())})

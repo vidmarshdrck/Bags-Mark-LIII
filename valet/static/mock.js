@@ -3,9 +3,10 @@
 const R=[[/job/,'Aaron → Eli → Issachar → Cyrus'],[/financ|money|budget/,'Aaron → Boaz'],[/property|rent|estate/,'Aaron → Joshua → Boaz'],[/build|software|app|code|deploy/,'Aaron → Nathan'],[/design|content|brand|logo/,'Aaron → Bezalel → Hiram → Vidmar'],[/research/,'Aaron → Issachar'],[/market|social/,'Aaron → Matthew']];
 const id=()=>Math.random().toString(16).slice(2,10),res=(status,data)=>({ok:status<300,status,data});
 window.mockApi=(p,o={})=>{const m=o.method||'GET',b=o.body||{},[path,qs]=p.split('?'),P=path.split('/');let r;
- if(p=='chat'){const l=b.text.toLowerCase();let t="Noted, sir. I'm running on the in-browser mock: no AI provider is connected.";
+ if(p=='chat'&&b.voice&&!b.transcribed)r=res(200,{reply:`Voice note received, ${b.duration} seconds. I couldn't get a transcript in this browser, so please give me the gist in text.`,source:'mock-browser'});
+ else if(p=='chat'){const l=b.text.toLowerCase();let t="Noted, sir. I'm running on the in-browser mock: no AI provider is connected.";
   if(/today|brief|happening/.test(l))t=`Briefing (mock): ${Object.keys(S.M).length} meeting(s), ${Object.values(S.T).filter(x=>x.status!='completed').length} running task(s).`;
-  else for(const[k,v]of R)if(k.test(l)){t=`Understood. I'd route that ${v}. Delegation isn't connected, so nothing was sent.`;break}r=res(200,{reply:t,source:'mock-browser'})}
+  else for(const[k,v]of R)if(k.test(l)){t=`Understood. I'd route that ${v}. Delegation isn't connected, so nothing was sent.`;break}r=res(200,{reply:(b.voice?'Voice note heard. ':'')+t,source:'mock-browser'})}
  else if(p=='interrupt')r=res(200,{});
  else if(p=='tasks'){if(m=='GET')r=res(200,{tasks:Object.values(S.T)});else{const t={id:id(),action:'server_status',status:'running',result:''};S.T[t.id]=t;
   setTimeout(()=>{t.status='completed';t.result='Mock status: no server connected (static preview).';S.T[t.id]=t;S.E.push({seq:S.E.length+1,speech:'Server status check completed.'});save()},2000);r=res(202,t)}}

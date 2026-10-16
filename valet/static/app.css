@@ -1,0 +1,17 @@
+:root{color-scheme:dark;--bg:#10171b;--surface:#182126;--border:#34434a;--ink:#ecf0ec;--muted:#a7b5b8;--accent:#d4bc83;--danger:#e9a299}
+@media(prefers-color-scheme:light){:root{color-scheme:light;--bg:#f4f1ea;--surface:#fff;--border:#d5cfc2;--ink:#1b2226;--muted:#56616a;--accent:#8a6a24;--danger:#a3382c}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.5 system-ui,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+header{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.mark{font-family:Georgia,serif;letter-spacing:.3em;color:var(--accent);font-size:1.3rem}.muted{color:var(--muted)}.small{font-size:.8rem}
+.pill{font-size:.75rem;border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:3px 9px}
+nav{display:flex}nav button{flex:1;border-radius:0;border:0;border-bottom:2px solid transparent;background:none}nav button.on{border-color:var(--accent);color:var(--accent)}
+main{max-width:640px;margin:auto;padding:12px}.tab{display:none}.tab.on{display:block}
+button,input,textarea,select{min-height:44px;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}button[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}.danger{color:var(--danger)}
+#log{min-height:45vh}.b{margin:8px 0;padding:10px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--border)}.b.me{margin-left:15%;border-color:var(--accent)}
+.b .src{font-size:.7rem;color:var(--muted);display:block}.voice{display:flex;gap:8px;margin:8px 0}.voice button{flex:1}
+#composer{display:flex;gap:8px}#composer input{flex:1}
+.ceo{border:1px solid var(--border);border-radius:14px;padding:10px;margin:10px 0;background:var(--surface)}.ceo h4{margin:0}.sp{padding:6px 0 6px 14px;border-left:2px solid var(--border);margin:4px 0 4px 6px;font-size:.9rem}
+.off{font-size:.7rem;color:var(--danger)}.meeting,.card{padding:12px;border:1px solid var(--border);border-radius:14px;margin:10px 0}.meeting label{display:block;margin-top:8px}.meeting input:not([type=checkbox]),.meeting textarea{width:100%}
+.participant-list{max-height:220px;overflow:auto;margin-top:8px}.participant-list label{display:flex;align-items:center;gap:8px;min-height:44px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

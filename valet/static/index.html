@@ -1,0 +1,17 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bags — Valet</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#10171b">
+<link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="stylesheet" href="app.css"></head>
+<body><header><div><div class="mark">BAGS</div><div id="agentHdr" class="muted">Bags · Personal butler</div></div><span id="conn" class="pill">mock backend</span></header>
+<nav><button data-tab="chat" class="on">Talk</button><button data-tab="org">Agents</button><button data-tab="meet">Meetings</button><button data-tab="tasks">Tasks</button></nav>
+<main>
+<section id="chat" class="tab on"><div id="log" aria-live="polite"></div><div id="partial" class="muted"></div>
+<div class="voice"><button id="handsfree" aria-pressed="false">🎙 Hands-free: off</button><button id="stop" class="danger">■ Stop</button></div>
+<form id="composer"><input id="msg" maxlength="4096" placeholder="Message Bags…" autocomplete="off"><button>Send</button></form>
+<p class="muted small" id="speechNote"></p></section>
+<section id="org" class="tab"><p class="muted small">Org chart from vidmarholdings AGENTS.md. Only Bags answers (mock). Everyone else is <b>disconnected</b> until a real agent bridge exists. Which specialist sits under which CEO is a proposed grouping.</p><div id="tree"></div></section>
+<section id="meet" class="tab"><div class="meeting"><h3>New CEO / project meeting</h3>
+<label>Project<input id="mProject" placeholder="e.g. VHPMS launch"></label><label>Agenda<textarea id="mAgenda"></textarea></label>
+<div class="participant-list" id="mParts"></div><label class="pref"><input type="checkbox" id="mOk"> I approve this shared context</label>
+<button id="mCreate">Open meeting</button></div><div id="mList"></div><div id="mView"></div></section>
+<section id="tasks" class="tab"><button id="tStatus">Run server status check (mock, confirmed)</button><label class="pref"><input type="checkbox" id="tSpeak"> Speak completions</label><div id="tList"></div></section>
+</main><script src="mock.js"></script><script src="agents.js"></script><script src="app.js"></script></body></html>

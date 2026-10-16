@@ -1,3 +1,4 @@
+[hidden]{display:none!important}
 /* Design read: personal butler companion app on a phone, used on the move, JARVIS-style HUD glass, slate + brass palette kept from the approved draft.
    Dials: VARIANCE 5 / MOTION 6 / DENSITY 4. Glass is a web frosted-glass approximation (backdrop-filter + inner border + inset highlight). */
 @font-face{font-family:Rajdhani;src:url(fonts/rajdhani-500.ttf);font-weight:500;font-display:swap}
@@ -70,3 +71,19 @@ body.no-dock .dock{display:none}
 .row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1 1 140px}.danger{color:var(--danger)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 @media (prefers-color-scheme:light){/* Theme lock: dark HUD by design; used outdoors at night as well. */}
+.sprite{position:absolute;width:0;height:0}
+.livebar{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r);margin-bottom:12px}.livebar>div{flex:1;display:grid}.livebar .note{font-size:.78rem}
+.livebar button{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.livebar.on{border-color:rgba(143,211,223,.55);box-shadow:inset 0 1px 0 var(--glass-hi),0 0 28px -6px rgba(143,211,223,.55)}
+.livebar.on button{background:var(--danger);color:#2a0f0b}
+.dock{flex-wrap:wrap}.chips{display:flex;gap:6px;flex-wrap:wrap;width:100%}.chips:empty{display:none}
+.chip-f{display:flex;align-items:center;gap:6px;max-width:100%;padding:4px 4px 4px 10px;border-radius:999px;background:rgba(217,192,138,.12);border:1px solid var(--edge);font-size:.78rem}
+.chip-f span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}.chip-f small{color:var(--muted)}
+.chip-f button{min-height:32px;width:32px;padding:0;display:grid;place-items:center;border-radius:50%;border:0;background:none}.chip-f svg{width:16px;height:16px}
+.chip-f img{width:24px;height:24px;border-radius:6px;object-fit:cover}
+.menu{position:absolute;left:8px;bottom:calc(100% + 8px);display:grid;gap:4px;padding:6px;border-radius:14px;z-index:8}.menu button{display:flex;gap:10px;align-items:center;border:0;background:none;justify-content:flex-start}
+.sheet{position:fixed;inset:0;z-index:20;display:grid;align-items:end;padding:12px;background:rgba(5,8,10,.55)}.sheet .panel{max-width:620px;width:100%;margin:0 auto calc(8px + env(safe-area-inset-bottom))}
+.mailcard{margin-top:6px;padding:10px 12px;border-radius:12px;border:1px solid rgba(143,211,223,.3);background:rgba(143,211,223,.06);font-size:.85rem}.mailcard b{display:block}.mailcard .m{color:var(--muted);font-size:.78rem}
+.att{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);margin-top:4px}.att svg{width:16px;height:16px}.att img{max-width:180px;border-radius:10px;display:block}
+.chip span#conn{font:500 .8rem Rajdhani,sans-serif;letter-spacing:.06em}
+.dock input{width:auto;flex:1 1 0}.dock .chips{order:-1}

@@ -134,6 +134,19 @@ def create_app(data_dir, provider=None, allowed_origin=None):
         media = 'application/manifest+json' if name.endswith('webmanifest') else None
         return FileResponse(Path(__file__).parent / 'static' / name, media_type=media)
 
+    valet_root = (Path(__file__).resolve().parent.parent / 'valet' / 'static')
+    valet_types = {'.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.png': 'image/png',
+                   '.ttf': 'font/ttf', '.webmanifest': 'application/manifest+json'}
+
+    async def valet_asset(request):
+        # Valet PWA shell, served same-origin so it can use this API. Static files only, no traversal.
+        from starlette.responses import FileResponse
+        rel = request.path_params.get('path') or 'index.html'
+        target = (valet_root / rel).resolve()
+        if valet_root not in target.parents or not target.is_file() or target.suffix not in valet_types:
+            return Response(status_code=404)
+        return FileResponse(target, media_type=valet_types[target.suffix])
+
     async def request_gate(request, call_next):
         origin = request.headers.get('origin')
         expected = allowed_origin or request.url.scheme + '://' + request.url.netloc
@@ -162,7 +175,9 @@ def create_app(data_dir, provider=None, allowed_origin=None):
         Route('/api/meetings', guarded(meetings.endpoint), methods=['GET', 'POST']),
         Route('/api/meetings/{meeting_id}', guarded(meetings.endpoint), methods=['GET', 'DELETE']),
         Route('/api/meetings/{meeting_id}/{operation}', guarded(meetings.endpoint), methods=['GET', 'POST']),
-        Route('/api/agents/{agent_id}/session', guarded(agents), methods=['POST']), Route('/', asset), Route('/{asset}', asset),
+        Route('/api/agents/{agent_id}/session', guarded(agents), methods=['POST']), Route('/valet', lambda r: Response(status_code=308, headers={'location': 'valet/'})),
+        Route('/valet/', valet_asset), Route('/valet/{path:path}', valet_asset),
+        Route('/', asset), Route('/{asset}', asset),
     ])
     # Security header middleware outermost, including early errors from the request gate.
     from starlette.middleware.base import BaseHTTPMiddleware

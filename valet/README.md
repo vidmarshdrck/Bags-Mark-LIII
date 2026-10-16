@@ -10,7 +10,9 @@ Installable phone app for Bags, built on the `feature/mobile-companion` backend 
   `/api/meetings/*`, `DELETE /api/device`. Bearer token is kept in memory only.
 - With no companion server (e.g. static hosting, `python3 valet/server.py`), it runs an in-browser demo.
 
-Opens as a plain chat. Live (hands-free) session starts only when you tap **Start live session**
+See CONNECTING.md for the exact server steps that make Bagheera answer for real.
+
+Opens as a plain chat. The raised centre button in the tab bar starts or ends the live (hands-free) session; tabs are Talk, Agents, Calls and Activities (meetings plus status checks). Light or dark theme, saved on the device. Calls: incoming agent calls with answer or decline; answering starts a spoken hands-free conversation (demo-simulated until the server emits call.incoming).
 (browser Web Speech API: dictation plus spoken replies, not full duplex). Composer: text, attach any
 file (chips; server accepts JPEG/PNG/text/PDF up to 2 MB, others stay on device), attach an email
 (paste or .eml, shown as a card; its text is shared as message context), hold-to-record voice notes.

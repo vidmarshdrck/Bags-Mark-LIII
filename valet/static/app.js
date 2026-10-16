@@ -1,4 +1,6 @@
 'use strict';
+/* theme: persisted, applied before paint */
+const root=document.documentElement;const setTheme=t=>{root.dataset.theme=t;localStorage.theme=t;const b=document.querySelector('#themeBtn');if(b){b.setAttribute('aria-label',t=='light'?'Switch to dark mode':'Switch to light mode');document.querySelector('#themeIcon').setAttribute('href',t=='light'?'#i-moon':'#i-sun')}};setTheme(localStorage.theme||'dark');
 const $=s=>document.querySelector(s),esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const kb=n=>n<1024?n+' B':n<1048576?(n/1024).toFixed(1)+' KB':(n/1048576).toFixed(1)+' MB';
 // Deployment base: served by the companion backend under /valet/, so the API lives one level up (keeps any /bags-mark/ proxy prefix).
@@ -30,7 +32,7 @@ function openWS(){if(B.mode!='server'||!B.token)return;closeWS();const w=new Web
  w.onopen=()=>w.send(JSON.stringify({type:'auth',token:B.token}));
  w.onmessage=ev=>{if(typeof ev.data!='string')return;const m=JSON.parse(ev.data);
   if(m.type=='ready'){B.wsReady=true;B.provider=m.provider;setConn();if(!m.provider?.capabilities?.text)sys('Connected, but no text provider is enabled on the server, so Bags cannot reply yet.')}
-  else if(m.type=='text'||m.type=='transcript.output'){botText(m.text,'Bags · '+(B.provider?.name||'server'))}
+  else if(m.type=='text'||m.type=='transcript.output'){botText(m.text,P.name+' · '+(B.provider?.name||'server'))}
   else if(m.type=='turn.complete'){flushBot()}
   else if(m.type=='error'){flushBot();sys(ERR[m.error]||('Server error: '+m.error))}};
  w.onclose=e=>{B.ws=null;B.wsReady=false;setConn();if(e.code==4401){B.token=null;setConn();sys('Session expired. Pair again.')}};
@@ -43,20 +45,20 @@ function flushBot(){clearTimeout(botTimer);if(!botBuf)return;const t=botBuf;botB
 /* ================= roster ================= */
 const sp=([id,name,role])=>({id,name,role,live:false});
 let roster=null;
-async function loadRoster(){if(B.mode=='server'&&B.token){const r=await http('api/agents');if(r.ok){roster=r.data.agents.map(a=>({id:a.id,name:a.name,role:a.role||a.route,live:a.id=='bags'}));tree();return}}roster=null;tree()}
+async function loadRoster(){if(B.mode=='server'&&B.token){const r=await http('api/agents');if(r.ok){roster=r.data.agents.map(a=>({id:a.id,name:a.id=='bags'?P.name:a.name,role:a.role||a.route,live:a.id=='bags'}));tree();return}}roster=null;tree()}
 const allAgents=()=>roster||[ORG.personal,ORG.governance,...ORG.ceos.flatMap(c=>[c,...c.specialists.map(sp)])];
 function tree(){const row=a=>`<button class="agent" data-id="${esc(a.id)}"><b>${esc(a.name)}</b><span class="r">${esc(a.role)}</span><span class="st ${a.live?'live':''}">${a.live?'Available':'Disconnected'}</span></button>`;
  $('#tree').innerHTML=roster?`<div class="glass unit">${roster.map(row).join('')}</div>`:`<div class="glass unit">${row(ORG.personal)}${row(ORG.governance)}</div>`+ORG.ceos.map(c=>`<div class="glass unit">${row(c)}<div class="sub">${c.specialists.map(s=>row(sp(s))).join('')}</div></div>`).join('');
  const all=allAgents();$('#tree').querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>pick(all.find(a=>a.id==el.dataset.id)));
  $('#mParts').innerHTML=all.map(a=>`<label><input type="checkbox" value="${esc(a.id)}" ${a.id==all[0].id?'checked disabled':''}> ${esc(a.name)} <span class="note">${esc(a.role)}</span></label>`).join('')}
-let agent={...ORG.personal},logs={};
+const P={name:ORG.personal.name,short:ORG.personal.short||ORG.personal.name};let agent={...ORG.personal},logs={};
 async function pick(a){stopLive();if(B.mode=='server'&&B.token){const r=await http(`api/agents/${encodeURIComponent(a.id)}/session`,{method:'POST',body:{}});if(r.ok){B.token=r.data.token;openWS()}}
  agent=a;$('#agentHdr').textContent=a.name+' · '+a.role+(a.live?'':' (disconnected)');$('#msg').disabled=!a.live;$('#msg').placeholder=a.live?'Message '+a.name:a.name+' is disconnected';render();go('chat')}
 
 /* ================= bottom tab bar ================= */
 function go(tab){document.querySelectorAll('.tabbar button').forEach(b=>{const on=b.dataset.tab==tab;b.classList.toggle('on',on);on?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')});
  document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==tab));document.body.classList.toggle('no-dock',tab!='chat');
- if(tab=='tasks')loadTasks();if(tab=='meet')loadMeetings();if(tab=='chat')scrollEnd();else scrollTo(0,0)}
+ if(tab=='act'){loadTasks();loadMeetings()}if(tab=='calls')renderCalls();if(tab=='chat')scrollEnd();else scrollTo(0,0)}
 document.querySelectorAll('.tabbar button').forEach(b=>b.onclick=()=>go(b.dataset.tab));
 
 /* ================= chat log ================= */
@@ -113,7 +115,7 @@ async function send(text,meta={}){text=(text||'').trim();const list=atts;if(!tex
  full=full.trim().slice(0,4096)||'[voice note with no transcript]';
  if(B.mode=='server'){if(!B.token)return sys('Pair this device first: tap the status button at the top.');if(!B.wsReady)return sys('Not connected to the server yet. Try again in a moment.');B.ws.send(JSON.stringify({type:'text',text:full}));return}
  const r=await mockApi('chat',{method:'POST',body:{text:full,...meta,files:files.length,emails:emails.map(e=>({subject:e.subject,from:e.from,body:e.body}))}});
- add('bot',r.data.reply,'Bags · demo');if(live.on||meta.voice)say(r.data.reply)}
+ add('bot',r.data.reply,P.name+' · demo');if(live.on||meta.voice)say(r.data.reply)}
 const strip=a=>({kind:a.kind,name:a.name,size:a.size,thumb:a.thumb,status:a.status,subject:a.subject,from:a.from,date:a.date,body:a.body||''});
 $('#composer').onsubmit=e=>{e.preventDefault();const t=$('#msg').value;$('#msg').value='';send(t);$('#msg').focus()};
 
@@ -125,10 +127,9 @@ function listen(){if(!live.on||live.speaking||!SR)return;const r=new SR();live.r
  r.onresult=e=>{let f='',p='';for(const x of e.results)x.isFinal?f+=x[0].transcript:p+=x[0].transcript;$('#partial').textContent=p;if(f.trim()){$('#partial').textContent='';send(f)}};
  r.onerror=e=>{if(e.error=='not-allowed'||e.error=='service-not-allowed'){stopLive();sys('Microphone permission denied, so the live session stopped. Typing still works.')}};
  r.onend=()=>{if(live.on&&!live.speaking)setTimeout(listen,300)};try{r.start()}catch{}}
-function paintLive(){$('.livebar').classList.toggle('on',live.on);$('#liveBtn span').textContent=live.on?'End live session':'Start live session';$('#liveBtn').setAttribute('aria-pressed',live.on);
- $('#liveTitle').textContent=live.on?'Live session on':'Live session off';$('#liveNote').textContent=live.on?'Listening. Speak, pause, and Bags answers aloud. The mic pauses while Bags talks.':"Tap to talk hands-free. Uses your browser's speech, no paid service.";setConn()}
-function startLive(){if(!SR){sys('This browser has no speech recognition, so a live session is not possible here. Try Chrome on Android. Typing and voice notes still work.');return}
- if(!agent.live)return sys(agent.name+' is disconnected.');live.on=true;paintLive();sys('Live session started.');listen()}
+function paintLive(){$('#liveBtn').setAttribute('aria-pressed',live.on);$('#liveBtn').setAttribute('aria-label',live.on?'End live session':'Start live session');$('#liveLbl').textContent=live.on?'End live':'Live';$('.fab-slot').classList.toggle('on',live.on);setConn()}
+function startLive(quiet){go('chat');if(!SR){sys('This browser has no speech recognition, so a live session is not possible here. Try Chrome on Android. Typing and voice notes still work.');return}
+ if(!agent.live)return sys(agent.name+' is disconnected.');live.on=true;paintLive();if(!quiet){sys('Live session started. Speak, pause, and '+P.short+' answers aloud. The mic pauses while '+P.short+' talks.');listen()}}
 function stopLive(){if(!live.on)return;live.on=false;try{live.rec&&live.rec.abort()}catch{}tts&&tts.cancel();live.speaking=false;$('#partial').textContent='';paintLive();sys('Live session ended.');B.ws?.readyState==1&&B.ws.send('{"type":"interrupt"}')}
 $('#liveBtn').onclick=()=>live.on?stopLive():startLive();
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopLive();if(mr)recStop(true)}});// sensors never keep running in background
@@ -179,8 +180,41 @@ async function openMeeting(id){const m=(await api('meetings/'+id)).data,P=m.part
 let cursor=0;
 $('#tStatus').onclick=async()=>{const r=await api('tasks',{method:'POST',body:{action:'server_status',confirmed:true}});if(!r.ok)sys(r.status==401?'Pair this device first.':'Task refused: '+(r.data.error||r.status));loadTasks()};
 async function loadTasks(){const r=await api('tasks');$('#tList').innerHTML=(r.data.tasks||[]).map(t=>`<div class="card"><b>${esc(t.action)}</b> · ${esc(t.status)}<div class="m">${esc(typeof t.result=='object'?JSON.stringify(t.result):t.result||'')}</div></div>`).join('')||'<p class="note">No tasks yet.</p>'}
-setInterval(async()=>{if(document.hidden||(B.mode=='server'&&!B.token)||B.mode=='detecting')return;const r=await api('events?after='+cursor);if(!r.ok)return;for(const e of r.data.events||[]){sys(e.speech||e.type);if($('#tSpeak').checked)say(e.speech||'Task finished.');loadTasks()}cursor=r.data.next_cursor??cursor},3000);
+setInterval(async()=>{if(document.hidden||(B.mode=='server'&&!B.token)||B.mode=='detecting')return;const r=await api('events?after='+cursor);if(!r.ok)return;for(const e of r.data.events||[]){if(e.type=='call.incoming'){incoming({from:e.agent_id||'bags',why:e.speech||'',source:'server'});continue}sys(e.speech||e.type);if($('#tSpeak').checked)say(e.speech||'Task finished.');loadTasks()}cursor=r.data.next_cursor??cursor},3000);
+
+$('#themeBtn').onclick=()=>setTheme(root.dataset.theme=='light'?'dark':'light');document.querySelector('meta[name=theme-color]');
+
+/* ================= calls: incoming agent calls, answer starts a voice conversation ================= */
+// Companion backend today emits only task.completed / task.failed events. A 'call.incoming' event
+// ({type:'call.incoming',agent_id,speech}) is handled here if the server ever sends one; until then calls are demo-only.
+let calls=JSON.parse(localStorage.valetCalls||'[]'),ringing=null,inCall=null;
+const saveCalls=()=>{localStorage.valetCalls=JSON.stringify(calls.slice(0,50))};
+const REASONS=['Your evening briefing is ready.','Two activities need a decision.','A meeting has new action items.','Quick check-in on today.'];
+let ac;function ringTone(on){try{if(!on){ac&&ac.close();ac=null;return}ac=new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=660;o.connect(g);g.connect(ac.destination);g.gain.value=0;o.start();
+ const t=ac.currentTime;for(let i=0;i<30;i++){g.gain.setValueAtTime(0,t+i*2);g.gain.linearRampToValueAtTime(.06,t+i*2+.05);g.gain.setValueAtTime(.06,t+i*2+.8);g.gain.linearRampToValueAtTime(0,t+i*2+.9)}}catch{}}
+function callAgent(id){return allAgents().find(a=>a.id==id)||ORG.personal}
+function incoming(c){if(ringing||inCall)return;const a=callAgent(c.from);if(!a.live){calls.unshift({id:Date.now(),from:a.id,name:a.name,at:Date.now(),status:'missed',note:'agent disconnected'});saveCalls();return}
+ ringing={id:Date.now(),from:a.id,name:a.name,at:Date.now(),why:c.why||REASONS[Math.floor(Math.random()*REASONS.length)],source:c.source||'demo'};
+ $('#callWho').textContent=a.name;$('#callAvatar').textContent=a.name[0];$('#callState').textContent='Incoming call'+(ringing.source=='demo'?' · demo':'');$('#callWhy').textContent=ringing.why;
+ $('#callSheet').classList.remove('live');$('#answerBtn').parentElement.hidden=false;$('#declineBtn').setAttribute('aria-label','Decline call');$('#declineBtn').nextElementSibling.textContent='Decline';
+ $('#callSheet').hidden=false;$('#answerBtn').focus();ringTone(true);navigator.vibrate&&navigator.vibrate([400,200,400]);
+ ringing.timer=setTimeout(()=>endRing('missed'),30000)}
+function endRing(status){if(!ringing)return;clearTimeout(ringing.timer);ringTone(false);navigator.vibrate&&navigator.vibrate(0);
+ const c={id:ringing.id,from:ringing.from,name:ringing.name,at:ringing.at,status,why:ringing.why};calls.unshift(c);saveCalls();ringing=null;
+ if(status!='answered')$('#callSheet').hidden=true;$('#callBadge').hidden=!calls.some(x=>x.status=='missed'&&!x.seen);renderCalls();return c}
+$('#declineBtn').onclick=()=>{if(inCall){hangUp();return}endRing('declined')};
+$('#answerBtn').onclick=()=>{const c=endRing('answered');inCall=c;const a=callAgent(c.from);if(a.id!=agent.id)pick(a);
+ $('#callSheet').classList.add('live');$('#callState').textContent='On call · hands-free';$('#answerBtn').parentElement.hidden=true;$('#declineBtn').setAttribute('aria-label','End call');$('#declineBtn').nextElementSibling.textContent='End call';
+ const hello=`Hello, sir. ${a.name} here. ${c.why} I'm listening.`;add('bot',hello,a.name+' · call');startLive(true);say(hello)};
+function hangUp(){inCall=null;$('#callSheet').hidden=true;stopLive()}
+function renderCalls(){calls.forEach(c=>c.seen=true);saveCalls();$('#callBadge').hidden=true;
+ $('#callNote').textContent=B.mode=='server'?'Live calls need a call.incoming event from the server, which the companion does not send yet. Simulated calls work for testing.':'Demo mode: calls are simulated on this device. Only '+P.name+' can call, because other agents are disconnected.';
+ $('#callLog').innerHTML=calls.length?`<div class="glass unit calllog">${calls.map(c=>`<button class="agent" data-c="${c.id}"><b>${esc(c.name)}</b><span class="r">${new Date(c.at).toLocaleString([], {weekday:'short',hour:'2-digit',minute:'2-digit'})}${c.why?' · '+esc(c.why):''}</span><span class="st ${c.status}">${c.status=='missed'?'Missed':c.status=='answered'?'Answered':'Declined'}</span></button>`).join('')}</div>`:'<p class="note">No calls yet.</p>';
+ $('#callLog').querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const c=calls.find(x=>x.id==b.dataset.c);pick(callAgent(c.from))})}
+$('#simCall').onclick=()=>setTimeout(()=>incoming({from:ORG.personal.id,source:'demo'}),600);
 
 /* ================= boot: plain chat, greeting, nothing live ================= */
-tree();paintLive();add('bot','Good evening, sir. Type a message, attach a file or an email, or hold the mic for a voice note. Tap Start live session when you want to talk hands-free.','Bags');
-detect().then(()=>{if(B.mode=='mock')mockApi('events?after=0').then(r=>cursor=r.data.next_cursor||0)});
+$('#agentHdr').textContent=P.name+' · '+ORG.personal.role;
+tree();paintLive();add('bot',`Good evening, sir. ${P.name} here. Type a message, attach a file or an email, or hold the mic for a voice note. Tap the gold Live button when you want to talk hands-free.`,P.name);
+detect().then(()=>{if(B.mode=='mock'){mockApi('events?after=0').then(r=>cursor=r.data.next_cursor||0);if(!sessionStorage.demoCall){sessionStorage.demoCall=1;setTimeout(()=>incoming({from:ORG.personal.id,source:'demo'}),25000)}}});
+$('#callBadge').hidden=!calls.some(x=>x.status=='missed'&&!x.seen);

@@ -15,20 +15,27 @@
 <symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM3 7l9 6 9-6"/></symbol>
 <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></symbol>
 <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></symbol>
+<symbol id="i-phone-off" viewBox="0 0 24 24"><path d="M3 21 21 3M5.6 13.5A16 16 0 0 1 3 6a2 2 0 0 1 2-2h4l2 5-2.5 1.5c.4.8.9 1.6 1.5 2.3M10.3 17.4c1 .6 2 1 3.1 1.3"/><path d="M15 13l5 2v4a2 2 0 0 1-2 2c-2.4-.1-4.7-.8-6.7-1.9"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0-8 0M3 12h1M20 12h1M12 3v1M12 20v1M5.6 5.6l.7.7M17.7 17.7l.7.7M5.6 18.4l.7-.7M17.7 6.3l.7-.7"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3h.4a7.5 7.5 0 0 0 8.6 11.8A9 9 0 1 1 12 3z"/></symbol>
+<symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></symbol>
 <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3 12h1M7 8v8M11 5v14M15 8v8M19 11v2M21 12h0"/></symbol>
 </svg>
-<header class="glass top"><div class="mark" aria-label="Bags">BAGS</div><div class="who"><span id="agentHdr">Bags · Personal butler</span><span id="provider" class="status">Plain chat</span></div>
+<header class="glass glass-strong top"><div class="mark" aria-hidden="true">BAGS</div><div class="who"><span id="agentHdr">Personal butler</span><span id="provider" class="status">Plain chat</span></div>
+<button id="themeBtn" class="icon ghost" aria-label="Switch to light mode"><svg><use id="themeIcon" href="#i-sun"/></svg></button>
 <button id="connBtn" class="chip" aria-controls="connPanel" aria-expanded="false"><span id="conn">Checking</span></button></header>
 <main>
 <section id="chat" class="tab on" aria-label="Talk">
 <div id="connPanel" class="glass panel" hidden><h2>Connection</h2><p class="note" id="connNote"></p>
 <form id="pairForm" class="row" hidden><input id="pairCode" type="password" autocomplete="off" placeholder="One-time pairing code" aria-label="One-time pairing code"><button class="primary">Pair device</button></form>
 <button id="lockBtn" class="danger" hidden>Lock and erase device</button></div>
-<div class="livebar glass"><div><b id="liveTitle">Live session off</b><span id="liveNote" class="note">Tap to talk hands-free. Uses your browser's speech, no paid service.</span></div><button id="liveBtn" class="primary" aria-pressed="false"><svg><use href="#i-wave"/></svg><span>Start live session</span></button></div><div id="log" aria-live="polite"></div><div id="partial" class="partial" aria-live="polite"></div></section>
+<div id="log" aria-live="polite"></div><div id="partial" class="partial" aria-live="polite"></div></section>
 <section id="org" class="tab" aria-label="Agents"><h2>Agents</h2><p class="note">Only Bags answers, on the local mock. Every other agent shows as disconnected until a real agent bridge exists.</p><div id="tree"></div></section>
-<section id="meet" class="tab" aria-label="Meetings"><h2>Meetings</h2><div class="glass panel"><label>Project<input id="mProject" placeholder="VHPMS launch"></label><label>Agenda<textarea id="mAgenda" rows="2"></textarea></label>
-<div class="participant-list" id="mParts"></div><label class="pref"><input type="checkbox" id="mOk"> I approve this shared context</label><button id="mCreate" class="primary">Open meeting</button></div><div id="mList"></div><div id="mView"></div></section>
-<section id="tasks" class="tab" aria-label="Tasks"><h2>Tasks</h2><div class="glass panel"><button id="tStatus" class="primary">Run status check</button><label class="pref"><input type="checkbox" id="tSpeak"> Speak completions</label></div><div id="tList"></div></section>
+
+<section id="act" class="tab" aria-label="Activities"><h2>Activities</h2><div id="meet"><h3>Meetings</h3><div class="glass panel"><label>Project<input id="mProject" placeholder="VHPMS launch"></label><label>Agenda<textarea id="mAgenda" rows="2"></textarea></label>
+<div class="participant-list" id="mParts"></div><label class="pref"><input type="checkbox" id="mOk"> I approve this shared context</label><button id="mCreate" class="primary">Open meeting</button></div><div id="mList"></div><div id="mView"></div></div><div id="tasks"><h3>Status checks</h3><div class="glass panel"><button id="tStatus" class="primary">Run status check</button><label class="pref"><input type="checkbox" id="tSpeak"> Speak completions</label></div><div id="tList"></div></div></section>
+<section id="calls" class="tab" aria-label="Calls"><h2>Calls</h2><p class="note" id="callNote"></p><div class="glass panel"><button id="simCall">Simulate incoming call</button></div><div id="callLog"></div></section>
 </main>
 <form id="composer" class="glass dock" autocomplete="off">
 <div id="chips" class="chips" aria-live="polite"></div>
@@ -37,14 +44,17 @@
 <button type="button" id="attach" class="icon" aria-label="Attach" aria-expanded="false"><svg><use href="#i-clip"/></svg></button>
 <button type="button" id="rec" class="icon mic" aria-label="Hold to record a voice note"><svg><use href="#i-mic"/></svg></button>
 <input id="msg" maxlength="4096" placeholder="Message Bags" enterkeyhint="send" aria-label="Message">
-<button id="sendBtn" class="icon send" aria-label="Send"><svg><use href="#i-send"/></svg></button>
+<button id="sendBtn" class="icon send round" aria-label="Send"><svg><use href="#i-send"/></svg></button>
 
 <div id="recHint" class="rechint" hidden><span class="dot"></span><span id="recTime">0:00</span> Recording. Release to send, slide away to cancel.</div>
 </form>
 <div id="emailSheet" class="sheet" hidden><div class="glass panel"><h2>Attach an email</h2><p class="note">Paste the raw email (headers and body) or upload a .eml file. It stays on this device unless you send it.</p><textarea id="emlText" rows="8" placeholder="From: ...&#10;Subject: ...&#10;&#10;Body"></textarea><div class="row"><button type="button" id="emlUpload">Upload .eml</button><button type="button" id="emlAdd" class="primary">Add email</button><button type="button" id="emlCancel">Cancel</button></div></div></div>
-<nav class="glass tabbar" aria-label="Sections">
+<nav class="glass glass-strong tabbar" aria-label="Sections">
 <button data-tab="chat" class="on" aria-current="page"><svg><use href="#i-chat"/></svg><span>Talk</span></button>
 <button data-tab="org"><svg><use href="#i-org"/></svg><span>Agents</span></button>
-<button data-tab="meet"><svg><use href="#i-meet"/></svg><span>Meetings</span></button>
-<button data-tab="tasks"><svg><use href="#i-task"/></svg><span>Tasks</span></button></nav>
+<div class="fab-slot"><button id="liveBtn" class="fab" aria-pressed="false" aria-label="Start live session"><svg><use href="#i-wave"/></svg></button><span id="liveLbl">Live</span></div>
+<button data-tab="calls"><svg><use href="#i-phone"/></svg><span>Calls</span><i id="callBadge" class="badge" hidden></i></button>
+<button data-tab="act"><svg><use href="#i-activity"/></svg><span>Activities</span></button></nav>
+<div id="callSheet" class="callsheet" hidden role="dialog" aria-modal="true" aria-labelledby="callWho"><div class="glass glass-strong callcard"><div class="avatar" id="callAvatar">B</div><p class="note" id="callState">Incoming call</p><h2 id="callWho">Bags</h2><p class="note" id="callWhy"></p>
+<div class="callbtns"><div><button id="declineBtn" class="round decline" aria-label="Decline call"><svg><use href="#i-phone-off"/></svg></button><span>Decline</span></div><div><button id="answerBtn" class="round answer" aria-label="Answer call"><svg><use href="#i-phone"/></svg></button><span>Answer</span></div></div></div></div>
 <script src="mock.js"></script><script src="agents.js"></script><script src="app.js"></script></body></html>

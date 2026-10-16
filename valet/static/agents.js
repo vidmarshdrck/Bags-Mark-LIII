@@ -1,6 +1,6 @@
 // Org chart from vidmarholdings AGENTS.md. Specialist-to-CEO grouping is PROPOSED (AGENTS.md lists specialists flat) — confirm with Shadrick.
 window.ORG={
- personal:{id:'bagheera_butler.agent',name:'Bags',role:'Personal butler',live:true},
+ personal:{id:'bagheera_butler.agent',name:'Bagheera',short:'Bags',role:'Personal butler · @Bagsvalet_bot',live:true},
  governance:{id:'aaron_delegate.agent',name:'Aaron',role:'Delegation, routing & governance'},
  ceos:[
   {id:'solomon_ceo.agent',name:'Solomon',role:'Group CEO · Vidmar Holdings',specialists:[

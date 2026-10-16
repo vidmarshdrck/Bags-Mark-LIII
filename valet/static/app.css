@@ -7,13 +7,13 @@
 @font-face{font-family:Manrope;src:url(fonts/manrope-600.ttf);font-weight:600;font-display:swap}
 :root{color-scheme:dark;--bg:#0b1114;--ink:#edf1ee;--muted:#a9b8bb;--accent:#d9c08a;--accent-ink:#1a1408;--cyan:#8fd3df;--danger:#f0a69c;
  --glass:rgba(22,32,37,.52);--glass-hi:rgba(255,255,255,.09);--edge:rgba(217,192,138,.22);--r:16px;--ease:cubic-bezier(.16,1,.3,1);
- --tabh:64px;--dockh:64px}
+ --tabh:72px;--field:rgba(255,255,255,.05);--glass-strong:rgba(16,24,28,.62);--bgimg:radial-gradient(120% 80% at 50% 0%,#14232a 0%,#0b1114 60%);--dockh:64px}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100dvh;background:var(--bg);color:var(--ink);font:400 1rem/1.5 Manrope,system-ui,sans-serif}
 ::selection{background:var(--accent);color:var(--accent-ink)} ::placeholder{color:#8d9da1} input,textarea{caret-color:var(--accent)}
 :focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 *{scrollbar-width:thin;scrollbar-color:rgba(217,192,138,.35) transparent}
-.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:radial-gradient(120% 80% at 50% 0%,#14232a 0%,var(--bg) 60%)}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:var(--bgimg)}
 .orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55}
 .orb.a{width:60vmax;height:60vmax;left:-25vmax;top:-20vmax;background:radial-gradient(circle,rgba(143,211,223,.28),transparent 65%)}
 .orb.b{width:55vmax;height:55vmax;right:-25vmax;bottom:-15vmax;background:radial-gradient(circle,rgba(217,192,138,.22),transparent 65%)}
@@ -25,7 +25,7 @@ html,body{margin:0;min-height:100dvh;background:var(--bg);color:var(--ink);font:
 .mark{font:600 1.35rem/1 Rajdhani,sans-serif;letter-spacing:.32em;color:var(--accent);text-shadow:0 0 18px rgba(217,192,138,.35)}
 .who{flex:1;min-width:0;display:flex;flex-direction:column;font-size:.8rem;line-height:1.3}.who #agentHdr{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .status{color:var(--cyan);font:500 .78rem Rajdhani,sans-serif;letter-spacing:.08em}
-button,input,textarea,select{font:inherit;color:var(--ink);min-height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05)}
+button,input,textarea,select{font:inherit;color:var(--ink);min-height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:var(--field)}
 button{cursor:pointer;padding:8px 14px;transition:transform .25s var(--ease),background .25s var(--ease),border-color .25s}
 button:active{transform:scale(.96)} button:disabled{opacity:.45;cursor:not-allowed}
 input,textarea,select{padding:10px 12px;width:100%}
@@ -87,3 +87,51 @@ body.no-dock .dock{display:none}
 .att{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);margin-top:4px}.att svg{width:16px;height:16px}.att img{max-width:180px;border-radius:10px;display:block}
 .chip span#conn{font:500 .8rem Rajdhani,sans-serif;letter-spacing:.06em}
 .dock input{width:auto;flex:1 1 0}.dock .chips{order:-1}
+
+/* ---------- light theme (persisted). Same glass system, daylight tokens. ---------- */
+:root[data-theme=light]{color-scheme:light;--bg:#eef1ef;--ink:#152027;--muted:#4c5b62;--accent:#8a6417;--accent-ink:#fffaf0;--cyan:#0f6f80;--danger:#b23a2c;
+ --glass:rgba(255,255,255,.55);--glass-hi:rgba(255,255,255,.9);--edge:rgba(138,100,23,.25);--field:rgba(255,255,255,.6);--glass-strong:rgba(255,255,255,.62);
+ --bgimg:radial-gradient(120% 80% at 50% 0%,#ffffff 0%,#e7ece9 55%,#dfe6e3 100%)}
+:root[data-theme=light] .orb.a{background:radial-gradient(circle,rgba(15,111,128,.22),transparent 65%)}
+:root[data-theme=light] .orb.b{background:radial-gradient(circle,rgba(138,100,23,.2),transparent 65%)}
+:root[data-theme=light] .b.sys{border-color:rgba(21,32,39,.2)} :root[data-theme=light] .rechint{background:rgba(255,255,255,.95)}
+:root[data-theme=light] .mark{text-shadow:none} :root[data-theme=light] .sheet{background:rgba(200,210,206,.5)}
+:root[data-theme=light] .b,.card{border-color:rgba(21,32,39,.1)} :root[data-theme=light] .ring{border-color:rgba(15,111,128,.12)}
+/* ---------- stronger glass for the top and bottom bars ---------- */
+.glass-strong{background:var(--glass-strong);-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+ box-shadow:inset 0 1px 0 var(--glass-hi),inset 0 -1px 0 rgba(0,0,0,.18),0 18px 40px -16px rgba(0,0,0,.55)}
+.top.glass-strong{box-shadow:inset 0 -1px 0 var(--edge),0 10px 30px -18px rgba(0,0,0,.6)}
+.ghost{background:transparent;border-color:transparent}
+.icon.ghost{width:44px;height:44px}
+/* ---------- tab bar with raised centre live button ---------- */
+.tabbar{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 84px minmax(0,1fr) minmax(0,1fr);align-items:end;left:8px;right:8px;bottom:8px;border-radius:24px;border-width:1px;padding:6px 6px calc(6px + env(safe-area-inset-bottom)/2);max-width:640px;margin:auto}
+.tabbar button{position:relative}
+.fab-slot{display:flex;flex-direction:column;align-items:center;gap:2px;font:500 .78rem Rajdhani,sans-serif;letter-spacing:.06em;color:var(--muted)}
+.tabbar .fab{width:64px;height:64px;margin-top:-34px;border-radius:50%;padding:0;display:grid;place-items:center;border:1px solid var(--edge);
+ background:radial-gradient(circle at 35% 30%,#f1dca8,var(--accent) 60%,#a6874a);color:#1a1408;
+ box-shadow:0 0 0 6px var(--bg),0 0 0 7px var(--edge),0 12px 28px -6px rgba(217,192,138,.6);transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+.tabbar .fab svg{width:28px;height:28px}
+.tabbar .fab[aria-pressed=true]{background:radial-gradient(circle at 35% 30%,#c9f1f7,var(--cyan) 60%,#3c8b97);box-shadow:0 0 0 6px var(--bg),0 0 0 7px rgba(143,211,223,.6),0 0 34px 2px rgba(143,211,223,.55);animation:breathe 2.4s var(--ease) infinite}
+@keyframes breathe{50%{transform:scale(1.06)}}
+.fab-slot.on span{color:var(--cyan)}
+.badge{position:absolute;top:6px;left:calc(50% + 6px);min-width:9px;height:9px;border-radius:50%;background:var(--danger);box-shadow:0 0 8px var(--danger)}
+.dock{bottom:calc(var(--tabh) + 22px + env(safe-area-inset-bottom))}
+main{padding-bottom:calc(var(--tabh) + var(--dockh) + 44px + env(safe-area-inset-bottom))}
+.round{border-radius:50%!important}
+h3{font:600 1.15rem Rajdhani,sans-serif;letter-spacing:.05em;margin:18px 0 4px}
+/* ---------- calls ---------- */
+.callsheet{position:fixed;inset:0;z-index:30;display:grid;place-items:center;padding:20px;background:rgba(5,8,10,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+:root[data-theme=light] .callsheet{background:rgba(220,228,225,.5)}
+.callcard{width:min(360px,100%);border-radius:28px;padding:32px 20px 26px;text-align:center;animation:in .5s var(--ease)}
+.callcard h2{font-size:2rem;margin:4px 0}
+.avatar{width:104px;height:104px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center;font:600 2.6rem Rajdhani,sans-serif;color:var(--accent);
+ background:radial-gradient(circle,rgba(217,192,138,.18),transparent 70%);border:1px solid var(--edge);box-shadow:0 0 0 0 rgba(217,192,138,.45);animation:ringpulse 1.6s var(--ease) infinite}
+.callsheet.live .avatar{animation:none;border-color:var(--cyan);color:var(--cyan)}
+@keyframes ringpulse{70%{box-shadow:0 0 0 22px rgba(217,192,138,0)}100%{box-shadow:0 0 0 0 rgba(217,192,138,0)}}
+.callbtns{display:flex;justify-content:space-around;margin-top:24px}.callbtns>div{display:grid;justify-items:center;gap:6px;font-size:.82rem;color:var(--muted)}
+.round.answer,.round.decline{width:68px;height:68px;padding:0;display:grid;place-items:center;border:0;color:#fff}
+.round.answer{background:#2f9e6a;box-shadow:0 10px 24px -8px rgba(47,158,106,.8)}.round.decline{background:#c9473a;box-shadow:0 10px 24px -8px rgba(201,71,58,.8)}
+.round.answer svg,.round.decline svg{width:28px;height:28px}
+.calllog .agent .st.missed{color:var(--danger)}.calllog .agent .st.answered{color:var(--cyan)}.calllog .agent .st.declined{color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.fab[aria-pressed=true],.avatar{animation:none!important}}
+@media (prefers-reduced-transparency:reduce){.glass-strong{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}}

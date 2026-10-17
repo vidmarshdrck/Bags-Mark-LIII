@@ -104,15 +104,16 @@ body.no-dock .dock{display:none}
 .ghost{background:transparent;border-color:transparent}
 .icon.ghost{width:44px;height:44px}
 /* ---------- tab bar with raised centre live button ---------- */
-.tabbar{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 84px minmax(0,1fr) minmax(0,1fr);align-items:end;left:8px;right:8px;bottom:8px;border-radius:24px;border-width:1px;padding:6px 6px calc(6px + env(safe-area-inset-bottom)/2);max-width:640px;margin:auto}
+.tabbar{grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;left:8px;right:8px;bottom:8px;border-radius:24px;border-width:1px;padding:6px 6px calc(6px + env(safe-area-inset-bottom)/2);max-width:640px;margin:auto}
 .tabbar button{position:relative}
 .fab-slot{display:flex;flex-direction:column;align-items:center;gap:2px;font:500 .78rem Rajdhani,sans-serif;letter-spacing:.06em;color:var(--muted)}
-.tabbar .fab{width:64px;height:64px;margin-top:-34px;border-radius:50%;padding:0;display:grid;place-items:center;border:1px solid var(--edge);
- background:radial-gradient(circle at 35% 30%,#f1dca8,var(--accent) 60%,#a6874a);color:#1a1408;
- box-shadow:0 0 0 6px var(--bg),0 0 0 7px var(--edge),0 12px 28px -6px rgba(217,192,138,.6);transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
-.tabbar .fab svg{width:28px;height:28px}
-.tabbar .fab[aria-pressed=true]{background:radial-gradient(circle at 35% 30%,#c9f1f7,var(--cyan) 60%,#3c8b97);box-shadow:0 0 0 6px var(--bg),0 0 0 7px rgba(143,211,223,.6),0 0 34px 2px rgba(143,211,223,.55);animation:breathe 2.4s var(--ease) infinite}
-@keyframes breathe{50%{transform:scale(1.06)}}
+/* Centre live control: tab-icon scale, barely raised, subtle glow (not a big disc). */
+.tabbar .fab{width:48px;height:48px;min-height:48px;margin-top:-8px;border-radius:50%;padding:0;display:grid;place-items:center;
+ border:1px solid var(--edge);background:var(--glass-strong);color:var(--accent);
+ box-shadow:inset 0 1px 0 var(--glass-hi),0 0 14px -2px rgba(217,192,138,.45);transition:transform .3s var(--ease),box-shadow .3s var(--ease),color .3s}
+/*fab svg*/.tabbar .fab svg{width:24px;height:24px}
+.tabbar .fab[aria-pressed=true]{color:var(--cyan);border-color:rgba(143,211,223,.6);box-shadow:inset 0 1px 0 var(--glass-hi),0 0 18px 0 rgba(143,211,223,.55);animation:breathe 2.4s var(--ease) infinite}
+@keyframes breathe{50%{box-shadow:inset 0 1px 0 var(--glass-hi),0 0 26px 2px rgba(143,211,223,.6)}}
 .fab-slot.on span{color:var(--cyan)}
 .badge{position:absolute;top:6px;left:calc(50% + 6px);min-width:9px;height:9px;border-radius:50%;background:var(--danger);box-shadow:0 0 8px var(--danger)}
 .dock{bottom:calc(var(--tabh) + 22px + env(safe-area-inset-bottom))}
